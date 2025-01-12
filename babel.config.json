@@ -3,9 +3,10 @@
   "plugins": [
     [
       "@babel/plugin-transform-react-jsx",
+      // build, prod 시 jsx 변환
       {
-        "pragma": "createElement",
-        "pragmaFrag": "Fragment"
+        "runtime": "automatic",
+        "importSource": "@/utils/core"
       }
     ]
   ]

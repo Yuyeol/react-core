@@ -1,5 +1,4 @@
 import Child from "@/components/child";
-import { createElement } from "@/utils/core/createElement";
 
 const App = () => {
   return (

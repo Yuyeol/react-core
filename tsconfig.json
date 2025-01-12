@@ -18,8 +18,8 @@
     "noEmit": true,
 
     // JSX
-    "jsx": "react",
-    "jsxFactory": "createElement",
+    // jsx 변환은 바벨에서 담당하므로 여기서는 코드 유지
+    "jsx": "preserve",
 
     /* Linting */
     "strict": true,

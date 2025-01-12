@@ -1,3 +1,4 @@
+// react 17 이전 버전
 export function createElement(
   type: string,
   props: Record<string, any>,

@@ -3,7 +3,6 @@
   "plugins": [
     [
       "@babel/plugin-transform-react-jsx",
-      // build, prod 시 jsx 변환
       {
         "runtime": "automatic",
         "importSource": "@/utils/core"

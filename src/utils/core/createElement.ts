@@ -1,8 +1,10 @@
-// react 17 이전 버전
+import { TElement, TProps } from "@/types/element";
+
+// react 17 이전 버전 - runtime: 'classic'
 export function createElement(
-  type: string,
-  props: Record<string, any>,
-  ...children: any[]
+  type: TElement,
+  props: TProps,
+  ...children: TElement[]
 ) {
   return {
     type,

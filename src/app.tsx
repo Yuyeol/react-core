@@ -1,5 +1,5 @@
 import Child from "@/components/child";
-import Header from "./components/header";
+import Header from "@/components/header";
 
 const App = () => {
   return (

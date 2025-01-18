@@ -1,17 +1,8 @@
 // 리액트 17 이후 버전 - runtime: 'automatic'
-import { TElement, TProps } from "@/types/element";
-
-const isFunctionComponent = (type: TElement) => {
-  return typeof type === "function";
-};
+import { TVDOMType, TVDOMProps } from "@/types/vdom";
 
 // jsx: 자식 요소가 없거나 하나일 때 사용
-export const jsxDEV = (type: TElement, props: TProps) => {
-  if (isFunctionComponent(type))
-    return {
-      type: type,
-      props: type(props).props,
-    };
+export const jsxDEV = (type: TVDOMType, props: TVDOMProps) => {
   return {
     type,
     props,

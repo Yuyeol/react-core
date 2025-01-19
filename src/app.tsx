@@ -1,5 +1,6 @@
 import Child from "@/components/child";
 import Header from "@/components/header";
+import Counter from "@/components/counter";
 
 const App = () => {
   return (
@@ -8,6 +9,7 @@ const App = () => {
       <h1>h1</h1>
       <Child name="one" />
       <Child />
+      <Counter />
     </div>
   );
 };

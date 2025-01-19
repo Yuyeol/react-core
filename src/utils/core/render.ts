@@ -8,6 +8,11 @@ const createElementWithAttributes = (normalizedNode: IVDOMNode<TVDOMProps>) => {
   const element = document.createElement(normalizedNode.type as TIntrinsicType);
   Object.entries(normalizedNode.props || {}).forEach(([key, value]) => {
     if (key === "children") return;
+    if (key.startsWith("on") && typeof value === "function") {
+      const eventName = key.toLowerCase().slice(2);
+      element.addEventListener(eventName, value);
+      return;
+    }
     element.setAttribute(key, value as string);
   });
   return element;

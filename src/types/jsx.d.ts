@@ -10,10 +10,15 @@ declare namespace JSX {
     };
   }
 
+  interface IButtonHTMLAttributes extends ICommonHTMLAttributes {
+    onClick?: () => void;
+  }
+
   interface IntrinsicElements {
     header: ICommonHTMLAttributes;
     div: ICommonHTMLAttributes;
     h1: ICommonHTMLAttributes;
     p: ICommonHTMLAttributes;
+    button: IButtonHTMLAttributes;
   }
 }

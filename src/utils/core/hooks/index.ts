@@ -2,7 +2,7 @@ import { IVDOMNode, TVDOMProps } from "@/types/vdom";
 import { render } from "@/utils/core/render";
 
 // React 모든 훅의 전역상태
-const global = {
+export const global = {
   states: [] as any[],
   index: 0,
   rootElement: null as HTMLElement | null,
@@ -32,18 +32,4 @@ export const rerender = () => {
   render(global.rootComponent(), global.rootElement);
 };
 
-export const useState = <T>(initialState: T): [T, (newState: T) => void] => {
-  // 생성된 스테이트의 고유 인덱스
-  const currentIndex = global.index;
-  let currentState = global.states[currentIndex] ?? initialState;
-
-  const setState = (newState: T) => {
-    currentState = newState;
-    console.log(currentState);
-    global.states[currentIndex] = newState;
-    rerender();
-  };
-
-  global.index++;
-  return [currentState, setState];
-};
+export { useState } from "@/utils/core/hooks/state";

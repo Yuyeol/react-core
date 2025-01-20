@@ -1,22 +1,9 @@
-import { IVDOMNode, TIntrinsicType, TVDOMProps, TVDOMType } from "@/types/vdom";
+import { IVDOMNode, TVDOMProps, TVDOMType } from "@/types/vdom";
+import createElementWithAttributes from "@/utils/core/render/createElementWithAttributes";
 
 const isIntrinsic = (type: TVDOMType) => typeof type === "string";
 const isTextNode = (node: IVDOMNode<TVDOMProps> | string) =>
   typeof node === "string" || typeof node === "number";
-
-const createElementWithAttributes = (normalizedNode: IVDOMNode<TVDOMProps>) => {
-  const element = document.createElement(normalizedNode.type as TIntrinsicType);
-  Object.entries(normalizedNode.props || {}).forEach(([key, value]) => {
-    if (key === "children") return;
-    if (key.startsWith("on") && typeof value === "function") {
-      const eventName = key.toLowerCase().slice(2);
-      element.addEventListener(eventName, value);
-      return;
-    }
-    element.setAttribute(key, value as string);
-  });
-  return element;
-};
 
 const getChildrenToArray = <T>(children: T | T[]): T[] => {
   return Array.isArray(children) ? children : [children];

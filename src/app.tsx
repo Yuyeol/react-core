@@ -1,17 +1,7 @@
-import Child from "@/components/child";
-import Header from "@/components/header";
-import Counter from "@/components/counter";
+import TodoList from "@/components/todo-list";
 
 const App = () => {
-  return (
-    <div>
-      <Header title="header" />
-      <h1>h1</h1>
-      <Child name="one" />
-      <Child />
-      <Counter />
-    </div>
-  );
+  return <TodoList />;
 };
 
 export default App;

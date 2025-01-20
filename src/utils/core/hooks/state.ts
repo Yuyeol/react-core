@@ -1,17 +1,34 @@
 import { global } from "@/utils/core/hooks";
 import { rerender } from "@/utils/core/hooks";
 
+// 배치 업데이트를 위한 간단한 큐
+let updateQueue: (() => void)[] = [];
+let isUpdating = false;
+
 export function useState<T>(initialState: T): [T, (newState: T) => void] {
-  // 생성된 스테이트의 고유 인덱스
   const currentIndex = global.index;
-  let currentState = global.states[currentIndex] ?? initialState;
+
+  if (global.states[currentIndex] === undefined) {
+    global.states[currentIndex] = initialState;
+  }
 
   const setState = (newState: T) => {
-    currentState = newState;
-    global.states[currentIndex] = newState;
-    rerender();
+    if (global.states[currentIndex] === newState) return;
+    updateQueue.push(() => {
+      global.states[currentIndex] = newState;
+    });
+    isUpdating = true;
+    queueMicrotask(() => {
+      updateQueue.forEach((update) => {
+        update();
+      });
+
+      updateQueue = [];
+      rerender();
+      isUpdating = false;
+    });
   };
 
   global.index++;
-  return [currentState, setState];
+  return [global.states[currentIndex], setState];
 }

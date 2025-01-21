@@ -20,7 +20,6 @@ export function render(vdom: IVDOMNode<TVDOMProps>, container: HTMLElement) {
   if ("children" in normalizedNode.props) {
     const children = getChildrenToArray(normalizedNode.props.children);
     children.forEach((child) => {
-      if (child === undefined) return;
       if (isTextNode(child))
         element.appendChild(document.createTextNode(child));
       else render(child, element);

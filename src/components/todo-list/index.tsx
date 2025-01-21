@@ -1,11 +1,7 @@
 import { useState } from "@/utils/core/hooks";
 import { IVDOMNode } from "@/types/vdom";
-
-interface ITodo {
-  id: number;
-  text: string;
-  completed: boolean;
-}
+import Todo from "@/components/todo-list/todo";
+import { ITodo } from "@/types/todo-list";
 
 export default function TodoList(): IVDOMNode {
   const [todos, setTodos] = useState<ITodo[]>([]);
@@ -42,21 +38,12 @@ export default function TodoList(): IVDOMNode {
       </div>
       <ul>
         {todos.map((todo) => (
-          <li
+          <Todo
             key={todo.id}
-            style={{
-              textDecoration: todo.completed ? "line-through" : "none",
-              color: todo.completed ? "#888" : "#000",
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={todo.completed}
-              onChange={() => toggleTodo(todo.id)}
-            />
-            <span>{todo.text}</span>
-            <button onClick={() => deleteTodo(todo.id)}>삭제</button>
-          </li>
+            todo={todo}
+            toggleTodo={toggleTodo}
+            deleteTodo={deleteTodo}
+          />
         ))}
       </ul>
     </div>

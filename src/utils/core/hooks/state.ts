@@ -1,9 +1,5 @@
 import { global } from "@/utils/core/hooks/global";
-import { rerender } from "@/utils/core/hooks";
-
-// 배치 업데이트를 위한 간단한 큐
-let updateQueue: (() => void)[] = [];
-let isUpdating = false;
+import { updateSchedule } from "@/utils/core/hooks/scheduler";
 
 export function useState<T>(initialState: T): [T, (newState: T) => void] {
   const currentIndex = global.getIndex();
@@ -14,18 +10,9 @@ export function useState<T>(initialState: T): [T, (newState: T) => void] {
 
   const setState = (newState: T) => {
     if (global.getStateAt(currentIndex) === newState) return;
-    updateQueue.push(() => {
-      global.setStateAt(currentIndex, newState);
-    });
-    isUpdating = true;
-    queueMicrotask(() => {
-      updateQueue.forEach((update) => {
-        update();
-      });
 
-      updateQueue = [];
-      rerender();
-      isUpdating = false;
+    updateSchedule(() => {
+      global.setStateAt(currentIndex, newState);
     });
   };
 

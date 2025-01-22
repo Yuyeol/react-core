@@ -1,23 +1,23 @@
 import { useState } from "@/utils/core/hooks";
 import { IVDOMNode } from "@/types/vdom";
-import Todo from "@/components/todo-list/todo";
 import { ITodo } from "@/types/todo-list";
+import TodoItem from "@/components/todo-list/todo-item";
 
 export default function TodoList(): IVDOMNode {
   const [todos, setTodos] = useState<ITodo[]>([]);
-  const [input, setInput] = useState("");
+  const [todoText, setTodoText] = useState("");
 
-  const inputText = (e: { target: HTMLInputElement }) => {
-    setInput(e.target.value);
+  const handleInputTodo = (e: { target: HTMLInputElement }) => {
+    setTodoText(e.target.value);
   };
 
-  const addTodo = () => {
-    if (!input.trim()) return;
-    setTodos([...todos, { id: Date.now(), text: input, completed: false }]);
-    setInput("");
+  const handleAddTodo = () => {
+    if (!todoText.trim()) return;
+    setTodos([...todos, { id: Date.now(), text: todoText, completed: false }]);
+    setTodoText("");
   };
 
-  const toggleTodo = (id: number) => {
+  const handleToggleTodo = (id: number) => {
     setTodos(
       todos.map((todo) =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo
@@ -25,7 +25,7 @@ export default function TodoList(): IVDOMNode {
     );
   };
 
-  const deleteTodo = (id: number) => {
+  const handleDeleteTodo = (id: number) => {
     setTodos(todos.filter((todo) => todo.id !== id));
   };
 
@@ -33,16 +33,16 @@ export default function TodoList(): IVDOMNode {
     <div>
       <h1>Todo List</h1>
       <div>
-        <input type="text" value={input} onChange={inputText} />
-        <button onClick={addTodo}>추가</button>
+        <input type="text" value={todoText} onChange={handleInputTodo} />
+        <button onClick={handleAddTodo}>추가</button>
       </div>
       <ul>
         {todos.map((todo) => (
-          <Todo
+          <TodoItem
             key={todo.id}
             todo={todo}
-            toggleTodo={toggleTodo}
-            deleteTodo={deleteTodo}
+            onToggleTodo={handleToggleTodo}
+            onDeleteTodo={handleDeleteTodo}
           />
         ))}
       </ul>

@@ -1,4 +1,4 @@
-import { global } from "@/utils/core/hooks";
+import { global } from "@/utils/core/hooks/global";
 import { rerender } from "@/utils/core/hooks";
 
 // 배치 업데이트를 위한 간단한 큐
@@ -6,16 +6,16 @@ let updateQueue: (() => void)[] = [];
 let isUpdating = false;
 
 export function useState<T>(initialState: T): [T, (newState: T) => void] {
-  const currentIndex = global.index;
+  const currentIndex = global.getIndex();
 
-  if (global.states[currentIndex] === undefined) {
-    global.states[currentIndex] = initialState;
+  if (global.getStateAt(currentIndex) === undefined) {
+    global.setStateAt(currentIndex, initialState);
   }
 
   const setState = (newState: T) => {
-    if (global.states[currentIndex] === newState) return;
+    if (global.getStateAt(currentIndex) === newState) return;
     updateQueue.push(() => {
-      global.states[currentIndex] = newState;
+      global.setStateAt(currentIndex, newState);
     });
     isUpdating = true;
     queueMicrotask(() => {
@@ -29,6 +29,6 @@ export function useState<T>(initialState: T): [T, (newState: T) => void] {
     });
   };
 
-  global.index++;
-  return [global.states[currentIndex], setState];
+  global.incrementIndex();
+  return [global.getStateAt(currentIndex), setState];
 }

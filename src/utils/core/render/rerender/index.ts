@@ -1,7 +1,7 @@
-import { root } from "@/utils/core/rootManager";
-import { global } from "@/utils/core/hooks/hookManager";
-import { reconcile } from "./reconcile";
-import { commitDiffs } from "./commitDiffs";
+import { root } from "@/utils/core/registry/root";
+import { global } from "@/utils/core/registry/hooks";
+import { commitDiffs } from "@/utils/core/render/rerender/commitDiffs";
+import { reconcile } from "@/utils/core/render/rerender/reconcile";
 
 export const rerender = () => {
   // 루트생성 없이 jsx 사용 시 에러처리

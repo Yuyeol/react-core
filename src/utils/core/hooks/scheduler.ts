@@ -1,4 +1,4 @@
-import { rerender } from "@/utils/core/rerender";
+import { rerender } from "@/utils/core/render/rerender";
 
 let updateQueue: (() => void)[] = [];
 let isScheduled = false;

@@ -1,5 +1,7 @@
 import { IVDOMNode, TPrimitiveNode, TVDOMProps } from "@/types/vdom";
-import { componentManager } from "@/utils/core/componentManager";
+import { componentCaches } from "@/utils/core/registry/componentCaches";
+import { getChildrenToArray } from "@/utils/getChildrenToArray";
+import { isTextNode } from "@/utils/isTextNode";
 
 export type TDiffType = "CREATE" | "UPDATE" | "DELETE" | "REPLACE";
 
@@ -23,21 +25,20 @@ const hasPropsChanged = (
   return false;
 };
 
-const isTextNode = (node: IVDOMNode<TVDOMProps> | TPrimitiveNode | null) =>
-  typeof node === "string" || typeof node === "number";
-
-const getChildrenToArray = <T>(children: T | T[]): T[] => {
-  return Array.isArray(children) ? children : [children];
-};
-
 const normalizeNewNode = (
   vdom: IVDOMNode<TVDOMProps> | null,
   path: number[]
 ): IVDOMNode<TVDOMProps> | null => {
   if (!vdom) return null;
   if (typeof vdom.type === "function") {
+    // 컴포넌트 실행 후 다음 리렌더를 위해 실행된 컴포넌트 캐싱
     const result = vdom.type(vdom.props);
-    componentManager.setInstance(vdom.type.name, path, result, vdom.props);
+    componentCaches.setExecutedComponent(
+      vdom.type.name,
+      path,
+      result,
+      vdom.props
+    );
     return result;
   }
   return vdom;
@@ -49,13 +50,17 @@ const normalizeOldNode = (
 ): IVDOMNode<TVDOMProps> | null => {
   if (!vdom) return null;
   if (typeof vdom.type === "function") {
-    const result = componentManager.getInstance(vdom.type.name, path)?.result;
+    // 캐싱된 컴포넌트 실행 결과 재사용
+    const result = componentCaches.getExecutedComponent(
+      vdom.type.name,
+      path
+    )?.result;
     return result ? result : null;
   }
   return vdom;
 };
 
-const reconcilePrimitiveNodes = (
+const reconcileTextNodes = (
   newNode: TPrimitiveNode | null,
   oldNode: TPrimitiveNode | null,
   path: number[]
@@ -80,8 +85,6 @@ export const reconcile = (
   if (!oldVDOM && !newVDOM) return diffs;
   const oldNode = normalizeOldNode(oldVDOM, path);
   const newNode = normalizeNewNode(newVDOM, path);
-
-  // early return: primitive node의 diffs 비교
 
   // CREATE, DELETE, REPLACE는 상호배타적 조건이므로 if-else 조건문 사용
   // 1. DELETE
@@ -110,9 +113,7 @@ export const reconcile = (
       const newChild = newChildren[i] || null;
       const oldChild = oldChildren[i] || null;
       if (isTextNode(newChild) && isTextNode(oldChild))
-        diffs.push(
-          ...reconcilePrimitiveNodes(newChild, oldChild, [...path, i])
-        );
+        diffs.push(...reconcileTextNodes(newChild, oldChild, [...path, i]));
       else diffs.push(...reconcile(newChild, oldChild, [...path, i]));
     }
   }

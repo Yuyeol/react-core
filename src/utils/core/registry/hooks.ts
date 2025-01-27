@@ -3,7 +3,7 @@ interface IGlobal {
   index: number;
 }
 
-const createHookManager = () => {
+const createHookRegistry = () => {
   const global: IGlobal = {
     states: [],
     index: 0,
@@ -27,4 +27,4 @@ const createHookManager = () => {
   };
 };
 
-export const global = createHookManager();
+export const global = createHookRegistry();

@@ -1,18 +1,18 @@
 import { IVDOMNode, TVDOMProps } from "@/types/vdom";
 import createElementWithAttributes from "@/utils/core/render/createElementWithAttributes";
-import { componentManager } from "../componentManager";
-
-const isTextNode = (node: IVDOMNode<TVDOMProps> | string) =>
-  typeof node === "string" || typeof node === "number";
-
-const getChildrenToArray = <T>(children: T | T[]): T[] => {
-  return Array.isArray(children) ? children : [children];
-};
+import { componentCaches } from "@/utils/core/registry/componentCaches";
+import { isTextNode } from "@/utils/isTextNode";
+import { getChildrenToArray } from "@/utils/getChildrenToArray";
 
 const normalizeNode = (vdom: IVDOMNode<TVDOMProps>, path: number[]) => {
   if (typeof vdom.type === "string") return vdom;
   const result = vdom.type(vdom.props);
-  componentManager.setInstance(vdom.type.name, path, result, vdom.props);
+  componentCaches.setExecutedComponent(
+    vdom.type.name,
+    path,
+    result,
+    vdom.props
+  );
   return result;
 };
 export function render(
@@ -29,7 +29,7 @@ export function render(
     const children = getChildrenToArray(normalizedNode.props.children);
     children.forEach((child, index) => {
       if (isTextNode(child))
-        element.appendChild(document.createTextNode(child));
+        element.appendChild(document.createTextNode(String(child)));
       else render(child, element, [...path, index]);
     });
   }

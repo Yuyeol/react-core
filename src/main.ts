@@ -1,5 +1,5 @@
 import App from "@/app";
-import { createRoot } from "@/utils/core/rootManager";
+import { createRoot } from "@/utils/core/render/createRoot";
 
 // console.log(App());
 const container = document.getElementById("app");

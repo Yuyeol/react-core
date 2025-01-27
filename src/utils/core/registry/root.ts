@@ -1,5 +1,4 @@
 import { IVDOMNode, TVDOMProps } from "@/types/vdom";
-import { render } from "./render";
 
 interface IRoot {
   rootElement: HTMLElement | null;
@@ -7,7 +6,7 @@ interface IRoot {
   currentVDOM: IVDOMNode<TVDOMProps> | null;
 }
 
-const createRootManager = () => {
+const createRootRegistry = () => {
   const rootManager: IRoot = {
     rootElement: null, // #app div element
     createVDOM: null, // new VDOM트리 생성 함수
@@ -35,15 +34,4 @@ const createRootManager = () => {
   };
 };
 
-export const root = createRootManager();
-
-export const createRoot = (
-  component: () => IVDOMNode<TVDOMProps>,
-  container: HTMLElement
-) => {
-  root.setRootElement(container);
-  root.setCreateVDOM(component);
-  const vdom = component();
-  root.setCurrentVDOM(vdom);
-  render(vdom, container);
-};
+export const root = createRootRegistry();

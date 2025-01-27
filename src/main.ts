@@ -1,6 +1,6 @@
 import App from "@/app";
 import { render } from "@/utils/core/render";
-import { createRoot } from "@/utils/core/hooks";
+import { createRoot } from "@/utils/core/rootManager";
 
 // console.log(App());
 const container = document.getElementById("app");

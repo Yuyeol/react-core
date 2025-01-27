@@ -1,4 +1,4 @@
-import { global } from "@/utils/core/hooks/global";
+import { global } from "@/utils/core/hooks/hookManager";
 import { updateSchedule } from "@/utils/core/hooks/scheduler";
 
 export function useState<T>(initialState: T): [T, (newState: T) => void] {

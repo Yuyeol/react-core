@@ -1,6 +1,4 @@
 import { IVDOMNode, TIntrinsicType, TVDOMProps } from "@/types/vdom";
-import { setFocusedElement } from "@/utils/core/hooks";
-import { global } from "@/utils/core/hooks/global";
 
 const createElementWithAttributes = (normalizedNode: IVDOMNode<TVDOMProps>) => {
   // create element
@@ -14,7 +12,6 @@ const createElementWithAttributes = (normalizedNode: IVDOMNode<TVDOMProps>) => {
       // onChange의 경우 "input" 이벤트를 사용하므로 예외처리
       if (eventName === "change" && element instanceof HTMLInputElement) {
         // WeakMap을 통해 포커스 엘리먼트 식별자(global.index) 저장
-        setFocusedElement(element, global.getIndex());
         element.addEventListener("input", value);
       } else {
         element.addEventListener(eventName, value);

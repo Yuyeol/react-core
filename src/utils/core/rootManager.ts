@@ -1,14 +1,17 @@
 import { IVDOMNode, TVDOMProps } from "@/types/vdom";
+import { render } from "./render";
 
 interface IRoot {
   rootElement: HTMLElement | null;
-  rootComponent: (() => IVDOMNode<TVDOMProps>) | null;
+  createVDOM: (() => IVDOMNode<TVDOMProps>) | null;
+  currentVDOM: IVDOMNode<TVDOMProps> | null;
 }
 
 const createRootManager = () => {
   const rootManager: IRoot = {
-    rootElement: null,
-    rootComponent: null,
+    rootElement: null, // #app div element
+    createVDOM: null, // new VDOM트리 생성 함수
+    currentVDOM: null, // 현재 렌더링된 VDOM 트리
   };
 
   return {
@@ -21,10 +24,13 @@ const createRootManager = () => {
     },
 
     // 루트 컴포넌트 관련
-    getRootComponent: () =>
-      rootManager.rootComponent as () => IVDOMNode<TVDOMProps>,
-    setRootComponent: (component: () => IVDOMNode<TVDOMProps>) => {
-      rootManager.rootComponent = component;
+    getCreateVDOM: () => rootManager.createVDOM as () => IVDOMNode<TVDOMProps>,
+    setCreateVDOM: (component: () => IVDOMNode<TVDOMProps>) => {
+      rootManager.createVDOM = component;
+    },
+    getCurrentVDOM: () => rootManager.currentVDOM,
+    setCurrentVDOM: (vdom: IVDOMNode<TVDOMProps>) => {
+      rootManager.currentVDOM = vdom;
     },
   };
 };
@@ -36,5 +42,8 @@ export const createRoot = (
   container: HTMLElement
 ) => {
   root.setRootElement(container);
-  root.setRootComponent(component);
+  root.setCreateVDOM(component);
+  const vdom = component();
+  root.setCurrentVDOM(vdom);
+  render(vdom, container);
 };

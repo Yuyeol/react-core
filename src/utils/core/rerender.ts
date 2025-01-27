@@ -1,6 +1,7 @@
 import { root } from "@/utils/core/rootManager";
 import { global } from "@/utils/core/hooks/hookManager";
 import { reconcile } from "./reconcile";
+import { commitDiffs } from "./commitDiffs";
 
 export const rerender = () => {
   // 루트생성 없이 jsx 사용 시 에러처리
@@ -10,7 +11,7 @@ export const rerender = () => {
   const oldVDOM = root.getCurrentVDOM();
 
   global.resetIndex();
-  const diffs = reconcile(newVDOM, oldVDOM, []);
-  // commitDiffs(diffs);
+  const diffs = reconcile(newVDOM, oldVDOM, [0]);
+  commitDiffs(diffs);
   root.setCurrentVDOM(newVDOM);
 };

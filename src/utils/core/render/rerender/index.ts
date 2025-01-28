@@ -1,5 +1,4 @@
 import { root } from "@/utils/core/registry/root";
-import { global } from "@/utils/core/registry/hooks";
 import { commitDiffs } from "@/utils/core/render/rerender/commitDiffs";
 import { reconcile } from "@/utils/core/render/rerender/reconcile";
 
@@ -10,7 +9,6 @@ export const rerender = () => {
   const newVDOM = root.getCreateVDOM()();
   const oldVDOM = root.getCurrentVDOM();
 
-  global.resetIndex();
   const diffs = reconcile(newVDOM, oldVDOM, [0]);
   commitDiffs(diffs);
   root.setCurrentVDOM(newVDOM);

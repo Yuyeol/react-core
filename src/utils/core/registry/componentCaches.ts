@@ -6,12 +6,12 @@ interface ComponentInstance {
 }
 
 const createComponentCachesRegistry = () => {
-  const instances = new Map<string, ComponentInstance>();
+  const componentCaches = new Map<string, ComponentInstance>();
 
   return {
     getExecutedComponent: (name: string, path: number[]) => {
       const key = `${name}:${path.join(",")}`; // (예: "TodoItem:0,2")
-      return instances.get(key);
+      return componentCaches.get(key);
     },
 
     setExecutedComponent: (
@@ -21,7 +21,7 @@ const createComponentCachesRegistry = () => {
       props: TVDOMProps
     ) => {
       const key = `${name}:${path.join(",")}`;
-      instances.set(key, { result, props });
+      componentCaches.set(key, { result, props });
     },
   };
 };

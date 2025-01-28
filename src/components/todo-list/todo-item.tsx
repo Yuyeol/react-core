@@ -1,4 +1,5 @@
 import { ITodo } from "@/types/todo-list";
+import { useEffect } from "@/utils/core/hooks";
 
 interface IProps {
   todo: ITodo;
@@ -7,6 +8,15 @@ interface IProps {
 }
 
 export default function TodoItem({ todo, onToggleTodo, onDeleteTodo }: IProps) {
+  useEffect(() => {
+    console.log("everytime");
+    return () => {
+      console.log("cleanup:", todo);
+    };
+  });
+  useEffect(() => {
+    console.log("only once");
+  }, []);
   return (
     <li
       style={{

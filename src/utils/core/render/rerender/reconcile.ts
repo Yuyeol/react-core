@@ -19,8 +19,8 @@ const hasPropsChanged = (
 ): boolean => {
   const allKeys = new Set([...Object.keys(newProps), ...Object.keys(oldProps)]);
   for (const key of allKeys) {
-    if (key === "children") continue;
-    if (newProps[key] !== oldProps[key]) return true;
+    if (key === "children") return false;
+    if (!Object.is(newProps[key], oldProps[key])) return true;
   }
   return false;
 };

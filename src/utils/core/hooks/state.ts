@@ -2,7 +2,7 @@ import { global } from "@/utils/core/registry/hooks";
 import { updateSchedule } from "@/utils/core/hooks/scheduler";
 
 export function useState<T>(initialState: T): [T, (newState: T) => void] {
-  const currentIndex = global.getIndex();
+  const currentIndex = global.getStateIndex();
 
   if (global.getStateAt(currentIndex) === undefined) {
     global.setStateAt(currentIndex, initialState);
@@ -10,12 +10,13 @@ export function useState<T>(initialState: T): [T, (newState: T) => void] {
 
   const setState = (newState: T) => {
     if (global.getStateAt(currentIndex) === newState) return;
-
-    updateSchedule(() => {
-      global.setStateAt(currentIndex, newState);
+    updateSchedule({
+      state: () => {
+        global.setStateAt(currentIndex, newState);
+      },
     });
   };
 
-  global.incrementIndex();
+  global.incrementStateIndex();
   return [global.getStateAt(currentIndex), setState];
 }

@@ -5,6 +5,7 @@ import { IVDOMNode, TPrimitiveNode, TVDOMProps } from "@/types/vdom";
 import createElementWithAttributes from "@/utils/core/render/createElementWithAttributes";
 import { isTextNode } from "@/utils/isTextNode";
 import { getChildrenToArray } from "@/utils/getChildrenToArray";
+import { updateEventHandlers } from "@/utils/core/eventSystem";
 
 const getElementByPath = (path: number[]): HTMLElement | null => {
   let current = root.getRootElement();
@@ -83,21 +84,7 @@ export const commitDiffs = (diffs: IDiffChange[]) => {
         // 이벤트 리스너 정리
         const oldProps =
           diff.oldNode && !isTextNode(diff.oldNode) ? diff.oldNode.props : {};
-        Object.entries(oldProps).forEach(([key, value]) => {
-          if (key.startsWith("on") && typeof value === "function") {
-            const eventName = key.toLowerCase().slice(2);
-            if (
-              eventName === "change" &&
-              targetElement instanceof HTMLInputElement
-            ) {
-              targetElement.removeEventListener("input", value);
-            } else {
-              targetElement.removeEventListener(eventName, value);
-            }
-          }
-        });
-
-        // 새로운 props 적용
+        updateEventHandlers(targetElement, diff.newNode.props, oldProps);
         updateAttributes(targetElement, diff.newNode.props);
         break;
       }

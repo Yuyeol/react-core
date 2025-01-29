@@ -12,7 +12,6 @@ export interface IEffect {
 }
 
 const shouldRerunEffect = (
-  // TDependencyList에는 ||Null이 있지만 prevDeps에는 null절대 들어오지 않음을 타입으로 표현
   prevDeps: TDependencyList,
   nextDeps: TDependencyList
 ): boolean => {
@@ -25,10 +24,7 @@ const shouldRerunEffect = (
   return prevDeps.some((dep, i) => !Object.is(dep, nextDeps[i]));
 };
 
-let inintFlag = false;
 const isInitialRun = (currentIndex: number) => {
-  if (inintFlag) return false;
-  inintFlag = true;
   return global.getEffectAt(currentIndex) === undefined;
 };
 
@@ -51,11 +47,9 @@ export const useEffect = (
     });
   } else {
     const prevEffect = global.getEffectAt(currentIndex);
-    if (prevEffect === undefined) return;
     const prevDeps = prevEffect?.deps;
 
     if (shouldRerunEffect(prevDeps, deps)) {
-      console.log("rerun");
       // 이펙트 실행전 이전 클린업이 있다면 먼저 실행
       updateSchedule({
         effect: () => {

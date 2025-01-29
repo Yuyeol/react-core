@@ -2,8 +2,7 @@ import { rerender } from "@/utils/core/render/rerender";
 import { global } from "@/utils/core/registry/hooks";
 let stateQueue: (() => void)[] = [];
 let effectQueue: (() => void)[] = [];
-let isStateScheduled = false;
-let isEffectScheduled = false;
+let isScheduled = false;
 
 export function updateSchedule({
   state,
@@ -15,24 +14,28 @@ export function updateSchedule({
   if (state) stateQueue.push(state);
   if (effect) effectQueue.push(effect);
 
-  if (!isStateScheduled) {
-    isStateScheduled = true;
+  if (!isScheduled) {
+    isScheduled = true;
     queueMicrotask(() => {
-      stateQueue.forEach((update) => update());
-      global.resetStateIndex();
-      stateQueue = [];
-      rerender();
-      isStateScheduled = false;
-    });
-  }
-  // 리렌더 완료 후 이펙트 실행
-  if (!isEffectScheduled) {
-    isEffectScheduled = true;
-    queueMicrotask(() => {
-      effectQueue.forEach((update) => update());
-      global.resetEffectIndex();
-      effectQueue = [];
-      isEffectScheduled = false;
+      try {
+        // 1. 상태 업데이트가 있는 경우에만 처리
+        if (stateQueue.length > 0) {
+          const updates = [...stateQueue];
+          stateQueue = [];
+          updates.forEach((update) => update());
+          global.resetStateIndex();
+          rerender();
+        }
+        // 2. 이펙트 실행
+        if (effectQueue.length > 0) {
+          const effects = [...effectQueue];
+          effectQueue = [];
+          effects.forEach((effect) => effect());
+          global.resetEffectIndex();
+        }
+      } finally {
+        isScheduled = false;
+      }
     });
   }
 }

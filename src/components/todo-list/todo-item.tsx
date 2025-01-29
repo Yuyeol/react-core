@@ -11,7 +11,7 @@ export default function TodoItem({ todo, onToggleTodo, onDeleteTodo }: IProps) {
   useEffect(() => {
     console.log("everytime");
     return () => {
-      console.log("cleanup:", todo);
+      console.log("cleanup");
     };
   });
   useEffect(() => {

@@ -2,6 +2,7 @@ import { IVDOMNode, TPrimitiveNode, TVDOMProps } from "@/types/vdom";
 import { componentCaches } from "@/utils/core/registry/componentCaches";
 import { getChildrenToArray } from "@/utils/getChildrenToArray";
 import { isTextNode } from "@/utils/isTextNode";
+import { global } from "@/utils/core/registry/hooks";
 
 export type TDiffType = "CREATE" | "UPDATE" | "DELETE" | "REPLACE";
 
@@ -88,8 +89,11 @@ export const reconcile = (
 
   // CREATE, DELETE, REPLACE는 상호배타적 조건이므로 if-else 조건문 사용
   // 1. DELETE
-  if (oldNode && !newNode)
+  if (oldNode && !newNode) {
+    // 컴포넌트 제거 시 이펙트 클린업 실행
+    global.cleanupEffect();
     diffs.push({ type: "DELETE", newNode: null, oldNode: oldNode, path });
+  }
   // 2. CREATE
   else if (!oldNode && newNode)
     diffs.push({ type: "CREATE", newNode: newNode, oldNode: null, path });

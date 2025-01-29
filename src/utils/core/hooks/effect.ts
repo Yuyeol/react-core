@@ -38,10 +38,11 @@ export const useEffect = (
     console.log("initial run");
     updateSchedule({
       effect: () => {
+        const cleanup = callback() || undefined;
         global.setEffectAt(currentIndex, {
           callback,
           deps,
-          cleanup: callback() || undefined,
+          cleanup,
         });
       },
     });
@@ -50,14 +51,18 @@ export const useEffect = (
     const prevDeps = prevEffect?.deps;
 
     if (shouldRerunEffect(prevDeps, deps)) {
-      // 이펙트 실행전 이전 클린업이 있다면 먼저 실행
       updateSchedule({
         effect: () => {
+          // 이펙트 실행전 이전 클린업이 있다면 먼저 실행
+          if (prevEffect.cleanup) {
+            prevEffect.cleanup();
+          }
           // 이펙트 실행과 동시에 클린업 수집
+          const cleanup = callback() || undefined;
           global.setEffectAt(currentIndex, {
             callback,
             deps,
-            cleanup: callback() || undefined,
+            cleanup,
           });
         },
       });
@@ -65,10 +70,3 @@ export const useEffect = (
   }
   global.incrementEffectIndex();
 };
-
-// // // 컴포넌트가 제거될 때 해당 컴포넌트의 모든 이펙트의 클린업을 실행해야 함
-// export const cleanupComponentEffects = (componentIndex: number) => {
-//   const effect = global.getEffectAt(componentIndex);
-//   if (!effect) return;
-//   if (effect.cleanup) effect.cleanup();
-// };

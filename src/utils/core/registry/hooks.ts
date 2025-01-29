@@ -18,8 +18,6 @@ const createHookRegistry = () => {
   };
 
   return {
-    getStates: () => global.states,
-    getEffects: () => global.effects,
     // 상태 관련
     getStateAt: (index: number) => global.states[index],
     setStateAt: (index: number, value: any) => {
@@ -34,6 +32,7 @@ const createHookRegistry = () => {
       global.stateIndex = 0;
     },
     // effects 관련 메서드 추가 필요
+    getEffects: () => global.effects,
     getEffectAt: (index: number) => global.effects[index],
     setEffectAt: (index: number, effect: IEffect) => {
       global.effects[index] = effect;
@@ -44,6 +43,11 @@ const createHookRegistry = () => {
     },
     resetEffectIndex: () => {
       global.effectIndex = 0;
+    },
+    cleanupEffect: () => {
+      global.effects.forEach((effect) => {
+        if (effect.cleanup) effect.cleanup();
+      });
     },
   };
 };

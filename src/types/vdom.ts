@@ -8,3 +8,5 @@ export interface IVDOMNode<Props = {}> {
   type: TVDOMType;
   props: Props;
 }
+
+export type TPrimitiveNode = string | number;

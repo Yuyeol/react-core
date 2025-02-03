@@ -1,4 +1,4 @@
-import { useState } from "@/utils/core/hooks";
+import { useEffect, useState } from "@/utils/core/hooks";
 import { IVDOMNode } from "@/types/vdom";
 import { ITodo } from "@/types/todo-list";
 import TodoItem from "@/components/todo-list/todo-item";
@@ -6,6 +6,11 @@ import TodoItem from "@/components/todo-list/todo-item";
 export default function TodoList(): IVDOMNode {
   const [todos, setTodos] = useState<ITodo[]>([]);
   const [todoText, setTodoText] = useState("");
+  console.log("component");
+
+  useEffect(() => {
+    console.log("effect todoText", todoText);
+  }, [todoText]);
 
   const handleInputTodo = (e: { target: HTMLInputElement }) => {
     setTodoText(e.target.value);
